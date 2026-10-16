@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.beat.mall.module.product.mapper.ProductMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.beat.mall.module.product.entity.Product">
+        insert into product (
+        <if test="product.categoryId != null">category_id,</if>
+        <if test="product.images != null and product.images != ''">images,</if>
+        <if test="product.name != null and product.name != ''">name,</if>
+        <if test="product.price != null">price,</if>
+        <if test="product.summary != null and product.summary != ''">summary,</if>
+        <if test="product.createTime != null">create_time,</if>
+        <if test="product.updateTime != null">update_time,</if>
+        is_deleted) values (
+        <if test="product.categoryId != null">#{product.categoryId},</if>
+        <if test="product.images != null and product.images != ''">#{product.images},</if>
+        <if test="product.name != null and product.name != ''">#{product.name},</if>
+        <if test="product.price != null">#{product.price},</if>
+        <if test="product.summary != null and product.summary != ''">#{product.summary},</if>
+        <if test="product.createTime != null">#{product.createTime},</if>
+        <if test="product.updateTime != null">#{product.updateTime},</if>
+        #{product.isDeleted}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.beat.mall.module.product.entity.Product">
+        update product set id= #{product.id}
+        <if test="product.categoryId != null">,category_id = #{product.categoryId}</if>
+        <if test="product.images != null and product.images != ''">,images = #{product.images}</if>
+        <if test="product.name != null and product.name != ''">,name = #{product.name}</if>
+        <if test="product.price != null">,price = #{product.price}</if>
+        <if test="product.summary != null and product.summary != ''">,summary = #{product.summary}</if>
+        <if test="product.createTime != null">,create_time = #{product.createTime}</if>
+        <if test="product.updateTime != null">,update_time = #{product.updateTime}</if>
+        <if test="product.isDeleted != null">,is_deleted = #{product.isDeleted}</if>
+        where id = #{product.id}
+    </update>
+
+    <select id="selectCountForConsole" resultType="Integer">
+        select count(p.id) from product p inner join category c on p.category_id = c.id where p.is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+        and (p.name like concat('%',#{keyword},'%')
+            or c.name like concat('%',#{keyword},'%')
+            )
+        </if>
+    </select>
+
+    <select id="selectPageForConsole" resultType="com.beat.mall.module.product.entity.Product">
+        select p.* from product p inner join category c on p.category_id = c.id where p.is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+        and (p.name like concat('%',#{keyword},'%')
+            or c.name like concat('%',#{keyword},'%')
+            )
+        </if>
+        order by p.id limit #{offset}, #{pageSize}
+    </select>
+
+    <select id="selectPageForApp" resultType="com.beat.mall.module.product.entity.Product">
+        select * from product where is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+        and (name like concat('%',#{keyword},'%')
+            or category_id in (${categoryIds})
+            )
+        </if>
+        order by id limit #{offset}, #{pageSize}
+    </select>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into product (
+        category_id,
+        images,
+        name,
+        price,
+        summary,
+        create_time,
+        update_time,
+        is_deleted
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.categoryId},
+            #{item.images},
+            #{item.name},
+            #{item.price},
+            #{item.summary},
+            #{item.createTime},
+            #{item.updateTime},
+            #{item.isDeleted}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

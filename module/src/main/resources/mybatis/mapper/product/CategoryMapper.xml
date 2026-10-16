@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.beat.mall.module.product.mapper.CategoryMapper">
+
+    <!-- 插入数据 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.beat.mall.module.product.entity.Category">
+        INSERT INTO category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                    <if test="id != null">
+                        id,
+                    </if>
+                    <if test="name != null">
+                        name,
+                    </if>
+                    <if test="image != null">
+                        image,
+                    </if>
+                    <if test="createTime != null">
+                        create_time,
+                    </if>
+                    <if test="updateTime != null">
+                        update_time,
+                    </if>
+                    <if test="isDeleted != null">
+                        is_deleted
+                    </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                    <if test="id != null">
+                        #{id},
+                    </if>
+                    <if test="name != null">
+                        #{name},
+                    </if>
+                    <if test="image != null">
+                        #{image},
+                    </if>
+                    <if test="createTime != null">
+                        #{createTime},
+                    </if>
+                    <if test="updateTime != null">
+                        #{updateTime},
+                    </if>
+                    <if test="isDeleted != null">
+                        #{isDeleted}
+                    </if>
+        </trim>
+    </insert>
+
+    <!-- 更新数据（根据主键） -->
+    <update id="update" parameterType="com.beat.mall.module.product.entity.Category">
+        UPDATE category
+        <set>
+                        <if test="name != null">
+                            name = #{name},
+                        </if>
+                        <if test="image != null">
+                            image = #{image},
+                        </if>
+                        <if test="createTime != null">
+                            create_time = #{createTime},
+                        </if>
+                        <if test="updateTime != null">
+                            update_time = #{updateTime},
+                        </if>
+                        <if test="isDeleted != null">
+                            is_deleted = #{isDeleted},
+                        </if>
+        </set>
+        WHERE
+                id = #{id}
+    </update>
+
+    <select id="getIdsByKeyword" resultType="long">
+        SELECT id
+        FROM category
+        WHERE is_deleted = 0
+        AND name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY id
+        LIMIT 999
+    </select>
+
+</mapper>
