@@ -9,6 +9,8 @@ public class ResponseCode {
     static {
         statusMap.put(1001, "OK");
         statusMap.put(1002, "没有登录哦~");
+        statusMap.put(1003, "该用户已登录");
+        statusMap.put(1004, "该用户已注册");
         statusMap.put(1010, "账号密码不匹配或账号不存在");
 
         //create user and forget password
@@ -16,6 +18,14 @@ public class ResponseCode {
 
         //console error
         //product error
+        statusMap.put(3001, "未查询到分类ID");
+        statusMap.put(3002, "未查询到产品ID");
+        statusMap.put(3003, "新增分类失败");
+        statusMap.put(3004, "修改分类失败");
+        statusMap.put(3005, "删除分类失败");
+        statusMap.put(3006, "新增产品失败");
+        statusMap.put(3007, "修改产品失败");
+        statusMap.put(3008, "删除产品失败");
         statusMap.put(3051, "产品必填信息不能为空");
         statusMap.put(3052, "产品ID不正确");
 

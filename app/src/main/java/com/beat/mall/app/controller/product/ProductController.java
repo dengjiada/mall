@@ -1,5 +1,6 @@
 package com.beat.mall.app.controller.product;
 
+import com.beat.mall.app.annotations.VerifiedUser;
 import com.beat.mall.app.domain.ImageInfo;
 import com.beat.mall.app.domain.product.ProductInfo;
 import com.beat.mall.app.domain.product.ProductListVo;
@@ -8,6 +9,8 @@ import com.beat.mall.module.product.entity.Category;
 import com.beat.mall.module.product.entity.Product;
 import com.beat.mall.module.product.service.CategoryService;
 import com.beat.mall.module.product.service.ProductService;
+import com.beat.mall.module.user.entity.User;
+import com.beat.mall.utils.BaseUtil;
 import com.beat.mall.utils.ImageUtil;
 import com.beat.mall.utils.Response;
 import com.beat.mall.utils.SpringUtil;
@@ -65,7 +68,13 @@ public class ProductController {
 
     @RequestMapping("/product/info")
     @ResponseBody
-    public Response productInfo(@RequestParam(name = "productId") Long productId) {
+    public Response productInfo(@VerifiedUser User loginUser,
+                                @RequestParam(name = "productId") Long productId) {
+        if (BaseUtil.isEmpty(loginUser)) {
+            log.warn("User not logged in.");
+            return new Response(1002);
+        }
+
         Product product = productService.getById(productId);
         ProductVo productVo = new ProductVo();
         if (null != product) {
@@ -80,11 +89,11 @@ public class ProductController {
                 productVo.setCategoryImage(category.getImage());
             } else {
                 log.error("Category not found(categoryId = " + product.getCategoryId() + ").");
-                return new Response(4004);
+                return new Response(3001);
             }
         } else {
             log.error("Can't find product id:{}", productId);
-            return new Response(4004);
+            return new Response(3002);
         }
         return new Response(1001, productVo);
     }

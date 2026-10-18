@@ -30,7 +30,7 @@ public class UserController {
                              @RequestParam(name = "phone") String phone,
                              @RequestParam(name = "password") String password) {
         if (!BaseUtil.isEmpty(loginUser)) {
-            return new Response(4004);
+            return new Response(1003);
         }
 
         //合法用户直接登录
@@ -69,7 +69,7 @@ public class UserController {
                                 @RequestParam(name = "province", required = false) String province,
                                 @RequestParam(name = "city", required = false) String city) {
         if (!BaseUtil.isEmpty(loginUser)) {
-            return new Response(4004);
+            return new Response(1004);
         }
 
         //考虑用户已经注册了

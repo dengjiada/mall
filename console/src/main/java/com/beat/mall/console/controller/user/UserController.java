@@ -32,7 +32,7 @@ public class UserController {
                              @RequestParam(name = "password") String password,
                              @RequestParam(name = "remember") boolean remember) {
         if (!BaseUtil.isEmpty(loginUser)) {
-            return new Response(4004);
+            return new Response(1003);
         }
 
         boolean result;

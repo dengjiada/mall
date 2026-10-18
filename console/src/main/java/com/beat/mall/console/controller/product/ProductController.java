@@ -27,6 +27,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    //产品分页模糊查询
     @RequestMapping("/product/list")
     @ResponseBody
     public Response productList(@VerifiedUser User loginUser, @RequestParam(name = "page") Integer page,
@@ -53,6 +54,7 @@ public class ProductController {
         return new Response(1001, productListVo);
     }
 
+    //产品详情
     @RequestMapping("/product/info")
     @ResponseBody
     public Response productInfo(@VerifiedUser User loginUser, @RequestParam(name = "productId") Long productId) {
@@ -63,7 +65,7 @@ public class ProductController {
         Product product = productService.getById(productId);
         if (BaseUtil.isEmpty(product)) {
             log.error("Can't find product id:{}", productId);
-            return new Response(4004);
+            return new Response(3002);
         }
         ProductVo productVo = new ProductVo();
         productVo.setImages(Arrays.stream(product.getImages().split("\\$")).toList());
@@ -79,6 +81,7 @@ public class ProductController {
         return new Response(1001, productVo);
     }
 
+    //新增产品
     @PostMapping("/product/create")
     public Response productCreate(@VerifiedUser User loginUser, @RequestBody ProductDto productDto) {
         if (BaseUtil.isEmpty(loginUser)) {
@@ -98,10 +101,11 @@ public class ProductController {
             return new Response(1001);
         } catch (Exception e) {
             log.error("Create product fail.", e);
-            return new Response(4004);
+            return new Response(3006);
         }
     }
 
+    //修改产品
     @RequestMapping("/product/update")
     public Response productUpdate(@VerifiedUser User loginUser,
                                   @RequestParam(name = "productId") Long productId,
@@ -123,10 +127,11 @@ public class ProductController {
             return new Response(1001);
         } catch (Exception e) {
             log.error("Update product fail.", e);
-            return new Response(4004);
+            return new Response(3007);
         }
     }
 
+    //逻辑删除产品
     @RequestMapping("/product/delete")
     public Response productDelete(@VerifiedUser User loginUser, @RequestParam(name = "productId") Long productId) {
         if (BaseUtil.isEmpty(loginUser)) {
@@ -138,7 +143,7 @@ public class ProductController {
             return new Response(1001);
         } catch (Exception e) {
             log.error("Delete product fail.", e);
-            return new Response(4004);
+            return new Response(3008);
         }
     }
 

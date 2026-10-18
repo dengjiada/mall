@@ -92,7 +92,7 @@ public class CategoryController {
             return new Response(1001);
         } catch (Exception e) {
             log.error("Create category fail.", e);
-            return new Response(4004);
+            return new Response(3003);
         }
     }
 
@@ -117,7 +117,7 @@ public class CategoryController {
             return new Response(1001);
         } catch (Exception e) {
             log.error("Update category fail.", e);
-            return new Response(4004);
+            return new Response(3004);
         }
     }
 
@@ -136,7 +136,7 @@ public class CategoryController {
             return new Response(1001);
         } catch (Exception e) {
             log.error("Delete category fail.", e);
-            return new Response(4004);
+            return new Response(3005);
         }
     }
 
