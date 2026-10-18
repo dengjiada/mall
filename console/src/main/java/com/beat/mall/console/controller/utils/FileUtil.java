@@ -64,7 +64,7 @@ public class FileUtil {
             Files.write(path, file.getBytes());
             return fileName;
         } catch (IOException e) {
-            log.error("Uplaod file fail.", e);
+            log.error("Upload file fail.", e);
             return fileName;
         }
     }

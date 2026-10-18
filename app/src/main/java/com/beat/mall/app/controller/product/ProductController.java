@@ -49,7 +49,7 @@ public class ProductController {
         Map<Long, String> categoryMap = categories.stream().
                 collect(Collectors.toMap(Category::getId, Category::getName));
         productList.stream().forEach(product -> {
-            String imageUrl = Arrays.stream(product.getImages().split("\\$")).toList().getFirst();
+            String imageUrl = product.getImages().split("\\$")[0];
             Float ar = ImageUtil.calcAr(imageUrl);
             productInfoList.add(new ProductInfo().setImage(new ImageInfo().setUrl(imageUrl).setAr(ar))
                     .setName(product.getName())

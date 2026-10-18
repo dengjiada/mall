@@ -32,3 +32,5 @@ log/
 Thumbs.db
 
 structure.txt
+
+tmp/upload/

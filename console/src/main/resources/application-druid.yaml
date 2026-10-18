@@ -1,0 +1,73 @@
+spring:
+  datasource:
+    druid:
+      # 数据库密码解密配置
+      connection-properties: config.decrypt=true;config.decrypt.key=${public-key}
+      initial-size: 5
+      max-active: 20
+      min-idle: 5
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-open-prepared-statements: 20
+      time-between-eviction-runs-millis: 2000
+      min-evictable-idle-time-millis: 60000
+      max-evictable-idle-time-millis: 300000
+      filters: config,stat,wall,slf4j
+
+      # --- Filter 配置 ---
+      filter:
+        config:
+          enabled: true
+        stat:
+          # 是否开启慢sql查询监控
+          log-slow-sql: true
+          # 慢SQL执行时间
+          slow-sql-millis: 1
+        wall:
+          enabled: true
+          db-type: mysql
+          config:
+            alter-table-allow: false
+            truncate-allow: false
+            drop-table-allow: false
+            # 是否允许非以上基本语句的其他语句，缺省关闭，通过这个选项就能够屏蔽DDL
+            none-base-statement-allow: false
+            # 检查UPDATE语句是否无where条件，这是有风险的，但不是SQL注入类型的风险
+            update-where-none-check: true
+            # SELECT ... INTO OUTFILE 是否允许，这个是mysql注入攻击的常见手段，缺省是禁止的
+            select-into-outfile-allow: false
+            # 是否允许调用Connection.getMetadata方法，这个方法调用会暴露数据库的表信息
+            metadata-allow: true
+          # 对被认为是攻击的SQL进行LOG.error输出
+          log-violation: true
+          # 对被认为是攻击的SQL抛出SQLExcepton
+          throw-exception: true
+
+      # --- 监控页面配置 (StatViewServlet) ---
+      stat-view-servlet:
+        enabled: true
+        url-pattern: '/druid/*'
+        login-username: admin
+        login-password: 123456
+        reset-enable: true
+        allow: 127.0.0.1
+        deny: # 留空即可
+
+      # --- Web 统计配置 (WebStatFilter) ---
+      web-stat-filter:
+        enabled: true
+        url-pattern: '/*'
+        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+        # session统计功能
+        session-stat-enable: true
+        # 最大session数
+        session-stat-max-count: 100000
+        # 置profileEnable能够监控单个url调用的sql列表
+        profile-enable: true
+        # 你可以配置principalSessionName，使得druid能够知道当前的session的用户是谁
+        principal-session-name: admin
+        # 你可以配置principalSessionName，使得druid能够知道当前的cookie的用户是谁
+        principal-cookie-name: admin
+
+      # Spring监控AOP切入点 (注意：原配置中的包名是 org.lsh.dubhe，这里原样保留，迁移时请确认是否需要改成你的包名)
+      aop-patterns: org.lsh.dubhe.service.*

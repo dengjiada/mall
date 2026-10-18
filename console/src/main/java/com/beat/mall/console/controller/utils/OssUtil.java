@@ -2,6 +2,9 @@ package com.beat.mall.console.controller.utils;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.common.auth.CredentialsProviderFactory;
+import com.aliyun.oss.common.auth.EnvironmentVariableCredentialsProvider;
+import com.aliyuncs.exceptions.ClientException;
 import com.beat.mall.utils.BaseUtil;
 import com.beat.mall.utils.FileType;
 import lombok.extern.slf4j.Slf4j;
@@ -23,16 +26,10 @@ public class OssUtil {
     @Value("${aliyun.oss.endpoint}")
     private String endpoint;
 
-    @Value("${aliyun.oss.accessKeyId}")
-    private String accessKeyId;
-
-    @Value("${aliyun.oss.accessKeySecret}")
-    private String accessKeySecret;
-
     @Value("${aliyun.oss.bucketName}")
     private String bucketName;
 
-    public String saveFile(MultipartFile file, FileType type) throws IOException {
+    public String saveFile(MultipartFile file, FileType type) throws IOException, ClientException {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("上传文件为空");
         }
@@ -62,7 +59,9 @@ public class OssUtil {
         }
         // 上传到 OSS
         try (InputStream uploadStream = file.getInputStream()) {
-            OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+            EnvironmentVariableCredentialsProvider credentialsProvider =
+                    CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
+            OSS ossClient = new OSSClientBuilder().build(endpoint, credentialsProvider);
             try {
                 ossClient.putObject(bucketName, fileName, uploadStream);
             } finally {

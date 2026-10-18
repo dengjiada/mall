@@ -1,0 +1,46 @@
+spring:
+  profiles:
+    include: local, druid
+  application:
+    name: console
+  jackson:
+    default-property-inclusion: non_absent
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+server:
+  port: 8081
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+    max-connections: 8192
+    accept-count: 100
+    connection-timeout: 20000
+
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/**/*.xml
+
+upload:
+  image:
+    dir: tmp/upload/image/
+  video:
+    dir: tmp/upload/video/
+  file:
+    dir: tmp/upload/file/
+
+aliyun:
+  oss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    bucketName: item-java
+
+application:
+  isapp: 0
+  pagesize: 10
+  sign:
+    key: sign
+  session:
+    key: _USER

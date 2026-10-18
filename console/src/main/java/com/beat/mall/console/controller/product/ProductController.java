@@ -40,7 +40,7 @@ public class ProductController {
         List<ProductInfo> productInfoList = new ArrayList<ProductInfo>();
         productList.stream().forEach(product -> {
             productInfoList.add(new ProductInfo().setImage(
-                            Arrays.stream(product.getImages().split("\\$")).toList().getFirst())
+                            product.getImages().split("\\$")[0])
                     .setName(product.getName())
                     .setPrice(product.getPrice())
                     .setProductId(product.getId()));

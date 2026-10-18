@@ -106,7 +106,7 @@
         limit #{begin}, #{size}
     </select>
 
-    <select id="getUsersTotalForConsole" resultType="Integer">
+    <select id="getUsersTotalForConsole" resultType="java.lang.Integer">
         select count(*) from user where is_deleted = 0 and is_ban = 0 and (id > 50000 or id in (10001))
         <if test="username != null and username != ''">and `username` like concat('%',#{username},'%')</if>
         <if test="phone != null and phone != ''">and `phone` like concat('%',#{phone},'%')</if>

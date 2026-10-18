@@ -36,7 +36,7 @@
         where id = #{product.id}
     </update>
 
-    <select id="selectCountForConsole" resultType="Integer">
+    <select id="selectCountForConsole" resultType="java.lang.Integer">
         select count(p.id) from product p inner join category c on p.category_id = c.id where p.is_deleted = 0
         <if test="keyword != null and keyword != ''">
         and (p.name like concat('%',#{keyword},'%')

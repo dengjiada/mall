@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    # 数据库驱动
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 数据库连接的URL
+    url: 'jdbc:mysql://localhost:3306/mall?allowPublicKeyRetrieval=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true&useAffectedRows=true'
+    # 数据库账号
+    username: root
+    # 加密的数据库密码
+    password: HWjruzI0G/pp5PQpX0fnf3WpXZIi5hZmmEpNM5ePNyElBp/0ls+LJ7vlazhAMD00gucV/inrC2UnK4GGQn+MvQ==
+
+# 加密key
+public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAIHYXsX6nwsEQKA1mFqP74riDvy80y0mNlcxscAu7tV77EIffKegJstoul48DZOn1+j8W2jdY9nBBd93rxqh5MsCAwEAAQ==
