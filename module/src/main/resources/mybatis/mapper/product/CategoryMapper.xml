@@ -6,48 +6,55 @@
 <mapper namespace="com.beat.mall.module.product.mapper.CategoryMapper">
 
     <!-- 插入数据 -->
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.beat.mall.module.product.entity.Category">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.beat.mall.module.product.entity.Category">
         INSERT INTO category
         <trim prefix="(" suffix=")" suffixOverrides=",">
-                    <if test="id != null">
-                        id,
-                    </if>
-                    <if test="name != null">
-                        name,
-                    </if>
-                    <if test="image != null">
-                        image,
-                    </if>
-                    <if test="createTime != null">
-                        create_time,
-                    </if>
-                    <if test="updateTime != null">
-                        update_time,
-                    </if>
-                    <if test="isDeleted != null">
-                        is_deleted
-                    </if>
+            <if test="id != null">
+                id,
+            </if>
+            <if test="parentId != null">
+                parent_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="image != null">
+                image,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted
+            </if>
         </trim>
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
-                    <if test="id != null">
-                        #{id},
-                    </if>
-                    <if test="name != null">
-                        #{name},
-                    </if>
-                    <if test="image != null">
-                        #{image},
-                    </if>
-                    <if test="createTime != null">
-                        #{createTime},
-                    </if>
-                    <if test="updateTime != null">
-                        #{updateTime},
-                    </if>
-                    <if test="isDeleted != null">
-                        #{isDeleted}
-                    </if>
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="parentId != null">
+                #{parentId},
+            </if>
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="image != null">
+                #{image},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted}
+            </if>
         </trim>
     </insert>
 
@@ -55,31 +62,34 @@
     <update id="update" parameterType="com.beat.mall.module.product.entity.Category">
         UPDATE category
         <set>
-                        <if test="name != null">
-                            name = #{name},
-                        </if>
-                        <if test="image != null">
-                            image = #{image},
-                        </if>
-                        <if test="createTime != null">
-                            create_time = #{createTime},
-                        </if>
-                        <if test="updateTime != null">
-                            update_time = #{updateTime},
-                        </if>
-                        <if test="isDeleted != null">
-                            is_deleted = #{isDeleted},
-                        </if>
+            <if test="parentId != null">
+                parent_id = #{parentId},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="image != null">
+                image = #{image},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted},
+            </if>
         </set>
         WHERE
-                id = #{id}
+        id = #{id}
     </update>
 
     <select id="getIdsByKeyword" resultType="long">
         SELECT id
         FROM category
         WHERE is_deleted = 0
-        AND name LIKE CONCAT('%', #{keyword}, '%')
+          AND name LIKE CONCAT('%', #{keyword}, '%')
         ORDER BY id
         LIMIT 999
     </select>

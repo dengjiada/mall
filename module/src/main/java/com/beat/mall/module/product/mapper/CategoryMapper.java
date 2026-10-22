@@ -28,4 +28,8 @@ public interface CategoryMapper {
     List<Category> getAll();
 
     List<Long> getIdsByKeyword(@Param("keyword") String keyword);
+
+    //根据parentId查询子类目
+    @Select("select * from category where parent_id = #{parentId} and is_deleted = 0")
+    List<Category> getChildrenByParentId(@Param("parentId") Long parentId);
 }

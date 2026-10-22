@@ -25,12 +25,27 @@ public class CategoryController {
     @RequestMapping("/list")
     public Response getAll() {
         List<Category> categoryList = service.getAll();
-        List<CategoryInfo> categoryInfoList = new ArrayList<CategoryInfo>();
-        categoryList.stream().forEach(category -> {
-            categoryInfoList.add(new CategoryInfo().setName(category.getName())
+        List<CategoryInfo> categoryInfoList = new ArrayList<>();
+        for (Category category : categoryList) {
+            CategoryInfo categoryInfo = new CategoryInfo();
+            Long parentId = category.getParentId();
+            if (parentId == 0) {
+                //说明是顶级类目，将类目id当作条件查询其子类目
+                List<Category> children = service.getChildrenByParentId(category.getId());
+                List<Long> childrenList = children.stream()
+                        .map(Category::getId)
+                        .toList();
+                categoryInfo.setChildren(childrenList);
+            } else {
+                //说明是子类目
+                categoryInfo.setChildren(new ArrayList<>());
+            }
+            categoryInfo.setName(category.getName())
                     .setImage(category.getImage())
-                    .setCategoryId(category.getId()));
-        });
+                    .setCategoryId(category.getId());
+
+            categoryInfoList.add(categoryInfo);
+        }
         CategoryListVo vo = new CategoryListVo();
         vo.setList(categoryInfoList);
         return new Response(1001, vo);

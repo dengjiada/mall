@@ -28,6 +28,7 @@ public class ResponseCode {
         statusMap.put(3008, "删除产品失败");
         statusMap.put(3009, "删除标签失败");
         statusMap.put(3010, "未查询到当前产品的标签");
+        statusMap.put(3011, "当前类目下有未被删除的子类目，不能进行删除操作");
         statusMap.put(3051, "产品必填信息不能为空");
         statusMap.put(3052, "产品ID不正确");
 

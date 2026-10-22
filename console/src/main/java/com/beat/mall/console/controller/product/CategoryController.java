@@ -41,9 +41,20 @@ public class CategoryController {
             return new Response(1002);
         }
         Category category = service.getById(categoryId);
+        List<Long> children = new ArrayList<>();
+        Long parentId = category.getParentId();
+        if (parentId == 0) {
+            //说明是顶级类目，将类目id当作条件查询其子类目
+            List<Category> childrenList = service.getChildrenByParentId(category.getId());
+            children = childrenList.stream()
+                    .map(Category::getId)
+                    .toList();
+        }
+
         CategoryVo vo = new CategoryVo();
         vo.setName(category.getName());
         vo.setImage(category.getImage());
+        vo.setChildren(children);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String createTime = sdf.format(category.getCreateTime() * 1000L);
         String updateTime = sdf.format(category.getUpdateTime() * 1000L);
@@ -62,12 +73,27 @@ public class CategoryController {
             return new Response(1002);
         }
         List<Category> categoryList = service.getAll();
-        List<CategoryInfo> categoryInfoList = new ArrayList<CategoryInfo>();
-        categoryList.stream().forEach(category -> {
-            categoryInfoList.add(new CategoryInfo().setName(category.getName())
+        List<CategoryInfo> categoryInfoList = new ArrayList<>();
+        for (Category category : categoryList) {
+            CategoryInfo categoryInfo = new CategoryInfo();
+            Long parentId = category.getParentId();
+            if (parentId == 0) {
+                //说明是顶级类目，将类目id当作条件查询其子类目
+                List<Category> children = service.getChildrenByParentId(category.getId());
+                List<Long> childrenList = children.stream()
+                        .map(Category::getId)
+                        .toList();
+                categoryInfo.setChildren(childrenList);
+            } else {
+                //说明是子类目
+                categoryInfo.setChildren(new ArrayList<>());
+            }
+            categoryInfo.setName(category.getName())
                     .setImage(category.getImage())
-                    .setCategoryId(category.getId()));
-        });
+                    .setCategoryId(category.getId());
+
+            categoryInfoList.add(categoryInfo);
+        }
         CategoryListVo vo = new CategoryListVo();
         vo.setList(categoryInfoList);
         return new Response(1001, vo);
@@ -79,7 +105,8 @@ public class CategoryController {
     @RequestMapping("/create")
     public Response create(@VerifiedUser User loginUser,
                            @RequestParam(name = "name") String name,
-                           @RequestParam(name = "image") String image) {
+                           @RequestParam(name = "image") String image,
+                           @RequestParam(name = "parentId") Long parentId) {
         if (BaseUtil.isEmpty(loginUser)) {
             log.warn("User not logged in.");
             return new Response(1002);
@@ -87,6 +114,7 @@ public class CategoryController {
         Category category = new Category();
         category.setName(name);
         category.setImage(image);
+        category.setParentId(parentId);
         try {
             service.insert(category);
             return new Response(1001);
@@ -102,6 +130,7 @@ public class CategoryController {
     @RequestMapping("/update")
     public Response update(@VerifiedUser User loginUser,
                            @RequestParam(name = "categoryId") Long categoryId,
+                           @RequestParam(name = "parentId") Long parentId,
                            @RequestParam(name = "name") String name,
                            @RequestParam(name = "image") String image) {
         if (BaseUtil.isEmpty(loginUser)) {
@@ -110,6 +139,7 @@ public class CategoryController {
         }
         Category category = new Category();
         category.setId(categoryId);
+        category.setParentId(parentId);
         category.setName(name);
         category.setImage(image);
         try {
@@ -131,6 +161,16 @@ public class CategoryController {
             return new Response(1002);
         }
         try {
+            Category category = service.getById(categoryId);
+            Long parentId = category.getParentId();
+            if (parentId == 0) {
+                //说明是顶级类目，将类目id当作条件查询其子类目
+                List<Category> childrenList = service.getChildrenByParentId(category.getId());
+                if (!BaseUtil.isEmpty(childrenList)) {
+                    //如果子类目不为空，提示不能删除
+                    return new Response(3011);
+                }
+            }
             productService.deleteByCategoryId(categoryId);
             service.delete(categoryId);
             return new Response(1001);

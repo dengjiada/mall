@@ -54,4 +54,9 @@ public class CategoryService {
     public List<Long> getIdsByKeyword(String keyword) {
         return mapper.getIdsByKeyword(keyword);
     }
+
+    //根据parentId查询子类目
+    public List<Category> getChildrenByParentId(Long parentId) {
+        return mapper.getChildrenByParentId(parentId);
+    }
 }

@@ -19,6 +19,7 @@ public class Category {
 
     @TableId(type = IdType.AUTO, value = "id")
     private Long id;
+    private Long parentId;
     private String name;
     private String image;
     private Integer createTime;
