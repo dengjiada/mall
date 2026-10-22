@@ -6,7 +6,11 @@ import com.beat.mall.console.domain.product.ProductListVo;
 import com.beat.mall.console.domain.product.ProductVo;
 import com.beat.mall.console.request.ProductDto;
 import com.beat.mall.module.product.entity.Product;
+import com.beat.mall.module.product.entity.ProductTagRelation;
+import com.beat.mall.module.product.entity.Tag;
 import com.beat.mall.module.product.service.ProductService;
+import com.beat.mall.module.product.service.ProductTagRelationService;
+import com.beat.mall.module.product.service.TagService;
 import com.beat.mall.module.user.entity.User;
 import com.beat.mall.utils.BaseUtil;
 import com.beat.mall.utils.Response;
@@ -26,6 +30,12 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private ProductTagRelationService productTagRelationService;
+
+    @Autowired
+    private TagService tagService;
 
     //产品分页模糊查询
     @RequestMapping("/product/list")
@@ -67,8 +77,29 @@ public class ProductController {
             log.error("Can't find product id:{}", productId);
             return new Response(3002);
         }
+        //根据产品id查找关系（未删除的）
+        List<ProductTagRelation> relationList = productTagRelationService.getByProductId(productId);
+        if (BaseUtil.isEmpty(relationList)) {
+            log.error("No tags found for this product id:{}", productId);
+            return new Response(3010);
+        }
+        List<Long> tagIdsList = relationList.stream()
+                .map(ProductTagRelation::getTagId)
+                .toList();
+        //批量查询tag
+        List<Tag> tagList = tagService.getByIds(tagIdsList);
+        if (BaseUtil.isEmpty(tagList)) {
+            log.error("No tags found for this product id:{}", productId);
+            return new Response(3010);
+        }
+        //将标签名收集成一个集合
+        List<String> tags = tagList.stream()
+                .map(Tag::getName)
+                .toList();
+
         ProductVo productVo = new ProductVo();
         productVo.setImages(Arrays.stream(product.getImages().split("\\$")).toList());
+        productVo.setTags(tags);
         productVo.setName(product.getName());
         productVo.setSaleAmount(Integer.valueOf(0));// 假设销售量为0
         productVo.setPrice(product.getPrice());
@@ -96,8 +127,9 @@ public class ProductController {
         String name = productDto.getName().trim();
         Float price = productDto.getPrice().floatValue();
         String summary = productDto.getSummary().trim();
+        String tags = productDto.getTags();//"A$B$C$D"（注意，使⽤$拼接）
         try {
-            productService.edit(null, categoryId, images, name, price, summary);
+            productService.edit(null, categoryId, images, name, price, summary, tags);
             return new Response(1001);
         } catch (Exception e) {
             log.error("Create product fail.", e);
@@ -113,7 +145,8 @@ public class ProductController {
                                   @RequestParam(name = "images") String images,
                                   @RequestParam(name = "name") String name,
                                   @RequestParam(name = "price") Float price,
-                                  @RequestParam(name = "summary") String summary) {
+                                  @RequestParam(name = "summary") String summary,
+                                  @RequestParam(name = "tags") String tags) {
         if (BaseUtil.isEmpty(loginUser)) {
             log.warn("User not logged in.");
             return new Response(1002);
@@ -123,7 +156,7 @@ public class ProductController {
             return new Response(3051);
         }
         try {
-            productService.edit(productId, categoryId, images, name, price, summary);
+            productService.edit(productId, categoryId, images, name, price, summary, tags);
             return new Response(1001);
         } catch (Exception e) {
             log.error("Update product fail.", e);

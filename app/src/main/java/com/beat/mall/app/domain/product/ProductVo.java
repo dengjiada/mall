@@ -9,6 +9,7 @@ import java.util.List;
 @Accessors(chain = true)
 public class ProductVo {
     private List<String> images;
+    private List<String> tags;
     private String name;
     private Integer saleAmount;
     private Float price;

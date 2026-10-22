@@ -7,8 +7,12 @@ import com.beat.mall.app.domain.product.ProductListVo;
 import com.beat.mall.app.domain.product.ProductVo;
 import com.beat.mall.module.product.entity.Category;
 import com.beat.mall.module.product.entity.Product;
+import com.beat.mall.module.product.entity.ProductTagRelation;
+import com.beat.mall.module.product.entity.Tag;
 import com.beat.mall.module.product.service.CategoryService;
 import com.beat.mall.module.product.service.ProductService;
+import com.beat.mall.module.product.service.ProductTagRelationService;
+import com.beat.mall.module.product.service.TagService;
 import com.beat.mall.module.user.entity.User;
 import com.beat.mall.utils.BaseUtil;
 import com.beat.mall.utils.ImageUtil;
@@ -39,6 +43,12 @@ public class ProductController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private ProductTagRelationService productTagRelationService;
+
+    @Autowired
+    private TagService tagService;
 
     @RequestMapping("/product/list")
     @ResponseBody
@@ -91,6 +101,26 @@ public class ProductController {
                 log.error("Category not found(categoryId = " + product.getCategoryId() + ").");
                 return new Response(3001);
             }
+            //根据产品id查找关系（未删除的）
+            List<ProductTagRelation> relationList = productTagRelationService.getByProductId(productId);
+            if (BaseUtil.isEmpty(relationList)) {
+                log.error("No tags found for this product id:{}", productId);
+                return new Response(3010);
+            }
+            List<Long> tagIdsList = relationList.stream()
+                    .map(ProductTagRelation::getTagId)
+                    .toList();
+            //批量查询tag
+            List<Tag> tagList = tagService.getByIds(tagIdsList);
+            if (BaseUtil.isEmpty(tagList)) {
+                log.error("No tags found for this product id:{}", productId);
+                return new Response(3010);
+            }
+            //将标签名收集成一个集合
+            List<String> tags = tagList.stream()
+                    .map(Tag::getName)
+                    .toList();
+            productVo.setTags(tags);
         } else {
             log.error("Can't find product id:{}", productId);
             return new Response(3002);

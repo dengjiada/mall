@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.beat.mall.module.product.mapper.ProductTagRelationMapper">
+
+    <!-- 插入数据 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.beat.mall.module.product.entity.ProductTagRelation">
+        INSERT INTO product_tag_relation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="tagId != null">
+                tag_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted
+            </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="productId != null">
+                #{productId},
+            </if>
+            <if test="tagId != null">
+                #{tagId},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted}
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into product_tag_relation(product_id, tag_id, create_time, update_time, is_deleted)
+        VALUES
+        <foreach collection="list" item="relation" separator=",">
+            (#{relation.productId},#{relation.tagId},#{relation.createTime},#{relation.updateTime},#{relation.isDeleted})
+        </foreach>
+    </insert>
+
+    <!-- 更新数据（根据主键） -->
+    <update id="update" parameterType="com.beat.mall.module.product.entity.ProductTagRelation">
+        UPDATE product_tag_relation
+        <set>
+            <if test="productId != null">
+                product_id = #{productId},
+            </if>
+            <if test="tagId != null">
+                tag_id = #{tagId},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted},
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <update id="updateBatch" parameterType="java.util.List">
+        update product_tag_relation
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="is_deleted = case" suffix="end,">
+                <foreach collection="list" item="relation">
+                    when id = #{relation.id} then #{relation.isDeleted}
+                </foreach>
+            </trim>
+            <trim prefix="update_time = case" suffix="end,">
+                <foreach collection="list" item="relation">
+                    when id = #{relation.id} then #{relation.updateTime}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" item="relation" separator="," open="(" close=")">
+            #{relation.id}
+        </foreach>
+    </update>
+
+</mapper>

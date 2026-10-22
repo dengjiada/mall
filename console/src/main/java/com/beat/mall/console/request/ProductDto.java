@@ -11,4 +11,5 @@ public class ProductDto {
     private String name;
     private Float price;
     private String summary;
+    private String tags;
 }

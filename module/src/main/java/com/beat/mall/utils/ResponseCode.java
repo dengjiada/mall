@@ -26,6 +26,8 @@ public class ResponseCode {
         statusMap.put(3006, "新增产品失败");
         statusMap.put(3007, "修改产品失败");
         statusMap.put(3008, "删除产品失败");
+        statusMap.put(3009, "删除标签失败");
+        statusMap.put(3010, "未查询到当前产品的标签");
         statusMap.put(3051, "产品必填信息不能为空");
         statusMap.put(3052, "产品ID不正确");
 
