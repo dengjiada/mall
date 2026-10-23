@@ -71,4 +71,9 @@ public class TagService {
     public List<Tag> getByIds(List<Long> tagIdsList) {
         return mapper.getByIds(tagIdsList);
     }
+
+    //根据标签名查询标签
+    public List<Tag> getByNameLike(String name) {
+        return mapper.getByNameLike(name);
+    }
 }

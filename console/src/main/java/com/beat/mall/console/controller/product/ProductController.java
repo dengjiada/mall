@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -41,14 +42,37 @@ public class ProductController {
     @RequestMapping("/product/list")
     @ResponseBody
     public Response productList(@VerifiedUser User loginUser, @RequestParam(name = "page") Integer page,
-                                @RequestParam(name = "keyword", required = false) String keyword) {
+                                @RequestParam(name = "productName", required = false) String productName,
+                                @RequestParam(name = "categoryName", required = false) String categoryName,
+                                @RequestParam(name = "tagName", required = false) String tagName) {
         if (BaseUtil.isEmpty(loginUser)) {
             log.warn("User not logged in.");
             return new Response(1002);
         }
         String pageSize = SpringUtil.getProperty("application.pagesize");
-        List<Product> productList = productService.pageForConsole(page, Integer.parseInt(pageSize), keyword);
-        List<ProductInfo> productInfoList = new ArrayList<ProductInfo>();
+        Map<String, List<Long>> resolveSearchIds = productService.resolveSearchIds(categoryName, tagName);
+        if (resolveSearchIds == null) {
+            //说明找不到与之匹配的类目名和标签名，返回空
+            ProductListVo productListVo = new ProductListVo().setList(new ArrayList<>())
+                    .setTotal(0)
+                    .setPageSize(Integer.parseInt(pageSize));
+            return new Response(1001, productListVo);
+        }
+
+        List<Long> categoryIds = resolveSearchIds.get("categoryIds");
+        List<Long> productIds = resolveSearchIds.get("productIds");
+        productName = productName != null ? productName.trim() : null;
+
+        //查总数
+        Integer total = productService.countForConsole(productName, categoryIds, productIds);
+        //查列表
+        List<Product> productList = new ArrayList<>();
+        if (total > 0) {
+            productList = productService.pageForConsole(page, Integer.parseInt(pageSize), productName, categoryIds, productIds);
+        }
+
+        //组装vo
+        List<ProductInfo> productInfoList = new ArrayList<>();
         productList.stream().forEach(product -> {
             productInfoList.add(new ProductInfo().setImage(
                             product.getImages().split("\\$")[0])
@@ -58,7 +82,6 @@ public class ProductController {
         });
         ProductListVo productListVo = new ProductListVo();
         productListVo.setList(productInfoList);
-        Integer total = productService.countForConsole(keyword);
         productListVo.setTotal(total);
         productListVo.setPageSize(Integer.valueOf(pageSize));
         return new Response(1001, productListVo);

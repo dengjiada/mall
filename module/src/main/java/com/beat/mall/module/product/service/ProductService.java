@@ -179,13 +179,74 @@ public class ProductService {
         return productMapper.getAll();
     }
 
-    public List<Product> pageForConsole(int page, int pageSize, String keyword) {
-        int offset = (page - 1) * pageSize;
-        return productMapper.selectPageForConsole(offset, pageSize, keyword);
+    //解析搜索的类目名称和标签名称
+    public Map<String, List<Long>> resolveSearchIds(String categoryName, String tagName) {
+        Map<String, List<Long>> result = new HashMap<>();
+        Set<Long> categoryIdSet = new HashSet<>();//存放类目id
+        List<Long> productIds = null;//存放标签对应的产品id
+
+        //解析类目
+        if (categoryName != null && !categoryName.trim().isEmpty()) {
+            //根据类目名模糊查询类目
+            List<Category> categoryList = categoryService.getByNameLike(categoryName.trim());
+            if (categoryList.isEmpty()) {
+                return null;//如果查不到类目，说明搜索结果为空
+            }
+
+            for (Category category : categoryList) {
+                Long parentId = category.getParentId();
+                if (parentId == 0) {
+                    //说明是父类目，查询出其子类目
+                    List<Category> children = categoryService.getChildrenByParentId(category.getId());
+                    if (!children.isEmpty()) {
+                        //将子类目拼接
+                        children.forEach(c -> categoryIdSet.add(c.getId()));
+                    }
+                } else {
+                    //如果是子类目，直接拼接
+                    categoryIdSet.add(category.getId());
+                }
+            }
+            //如果找了一圈，发现没有有效的类目 ID，说明搜索结果为空
+            if (categoryIdSet.isEmpty()) {
+                return null;
+            }
+        }
+
+        //解析标签
+        if (tagName != null && !tagName.trim().isEmpty()) {
+            //根据标签名查询标签
+            List<Tag> tagList = tagService.getByNameLike(tagName.trim());
+            if (tagList.isEmpty()) {
+                return null;//如果查不到该标签，说明搜索结果为空
+            }
+            //根据标签信息查找与之有关系的产品
+            List<Long> tagIds = tagList.stream().map(Tag::getId).toList();
+            List<ProductTagRelation> relationList = productTagRelationService.getByTagIds(tagIds);
+            if (relationList.isEmpty()) {
+                return null;//如果查不到关系，说明搜索为空
+            }
+            productIds = relationList.stream()
+                    .map(ProductTagRelation::getProductId)
+                    .distinct()
+                    .toList();
+        }
+
+        List<Long> categoryIds = new ArrayList<>(categoryIdSet);
+        result.put("categoryIds", categoryIds);
+        result.put("productIds", productIds);
+        return result;
     }
 
-    public Integer countForConsole(String keyword) {
-        return productMapper.selectCountForConsole(keyword);
+    //分页按条件查询产品
+    public List<Product> pageForConsole(int page, int pageSize, String productName, List<Long> categoryIds, List<Long> productIds) {
+        int offset = (page - 1) * pageSize;
+        return productMapper.selectPageForConsole(offset, pageSize, productName, categoryIds, productIds);
+    }
+
+    //查询符合条件总数
+    public Integer countForConsole(String productName, List<Long> categoryIds, List<Long> productIds) {
+        return productMapper.selectCountForConsole(productName, categoryIds, productIds);
     }
 
     public int deleteByCategoryId(Long categoryId) {

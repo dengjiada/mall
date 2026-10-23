@@ -40,4 +40,7 @@ public interface ProductTagRelationMapper {
     //根据标签id查询关系
     @Select("select * from product_tag_relation where tag_id = #{tagId} and is_deleted = 0")
     List<ProductTagRelation> getByTagId(@Param("tagId") Long tagId);
+
+    //根据标签id批量查询关系
+    List<ProductTagRelation> getByTagIds(@Param("tagIds") List<Long> tagIds);
 }

@@ -104,4 +104,15 @@
         </foreach>
     </update>
 
+    <select id="getByTagIds" resultType="com.beat.mall.module.product.entity.ProductTagRelation" parameterType="java.util.List">
+        select * from product_tag_relation
+        where is_deleted = 0
+        <if test="tagIds != null and tagIds.size() > 0">
+            and tag_id in
+            <foreach collection="tagIds" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
 </mapper>

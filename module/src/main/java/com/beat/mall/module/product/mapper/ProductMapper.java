@@ -28,9 +28,11 @@ public interface ProductMapper {
     List<Product> getAll();
 
     List<Product> selectPageForConsole(@Param("offset") int begin, @Param("pageSize") int pageSize,
-                                       @Param("keyword") String keyword);
+                                       @Param("productName") String productName, @Param("categoryIds") List<Long> categoryIds,
+                                       @Param("productIds") List<Long> productIds);
 
-    Integer selectCountForConsole(@Param("keyword") String keyword);
+    Integer selectCountForConsole(@Param("productName") String productName, @Param("categoryIds") List<Long> categoryIds,
+                                  @Param("productIds") List<Long> productIds);
 
     List<Product> selectPageForApp(@Param("offset") int begin, @Param("pageSize") int pageSize,
                                    @Param("keyword") String keyword, @Param("categoryIds") String categoryIds);

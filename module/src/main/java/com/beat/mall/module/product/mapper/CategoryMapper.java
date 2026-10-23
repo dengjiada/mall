@@ -32,4 +32,8 @@ public interface CategoryMapper {
     //根据parentId查询子类目
     @Select("select * from category where parent_id = #{parentId} and is_deleted = 0")
     List<Category> getChildrenByParentId(@Param("parentId") Long parentId);
+
+    //根据类目名查询类目
+    @Select("select * from category where is_deleted = 0 and name like concat('%',#{name},'%')")
+    List<Category> getByNameLike(String name);
 }

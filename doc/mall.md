@@ -105,7 +105,11 @@ baseUrl: http://localhost:8081
 
 page:[Int]
 
-keyword:[String],(required=false)
+productName:[String],(required=false)
+
+categoryName:[String],(required=false)
+
+tagName:[String],(required=false)
 
 返回：
 

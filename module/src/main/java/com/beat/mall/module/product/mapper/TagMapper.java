@@ -1,7 +1,11 @@
 package com.beat.mall.module.product.mapper;
 
 import com.beat.mall.module.product.entity.Tag;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
 import java.util.List;
 
 @Mapper
@@ -28,4 +32,8 @@ public interface TagMapper {
 
     //批量查询tag
     List<Tag> getByIds(@Param("list") List<Long> tagIdsList);
+
+    //根据标签名查询标签
+    @Select("select * from tag where name like concat('%',#{name},'%')")
+    List<Tag> getByNameLike(String name);
 }

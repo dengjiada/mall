@@ -75,4 +75,9 @@ public class ProductTagRelationService {
     public List<ProductTagRelation> getByProductId(Long productId) {
         return mapper.getByProductId(productId);
     }
+
+    //批量查询关系根据标签id
+    public List<ProductTagRelation> getByTagIds(List<Long> tagIds) {
+        return mapper.getByTagIds(tagIds);
+    }
 }

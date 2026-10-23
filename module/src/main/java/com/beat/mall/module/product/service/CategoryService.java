@@ -59,4 +59,9 @@ public class CategoryService {
     public List<Category> getChildrenByParentId(Long parentId) {
         return mapper.getChildrenByParentId(parentId);
     }
+
+    //根据类目名查询类目
+    public List<Category> getByNameLike(String name) {
+        return mapper.getByNameLike(name);
+    }
 }
