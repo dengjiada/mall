@@ -42,4 +42,6 @@ public interface ProductMapper {
 
     void insertBatch(@Param("list") List<Product> products);
 
+    //根据产品id批量查询产品
+    List<Product> getByIds(@Param("productIds") List<Long> productIds);
 }

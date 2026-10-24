@@ -91,6 +91,15 @@
         order by id limit #{offset}, #{pageSize}
     </select>
 
+    <select id="getByIds" resultType="com.beat.mall.module.product.entity.Product" parameterType="java.util.List">
+        select * from product
+        where is_deleted = 0
+        and id in
+        <foreach collection="productIds" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <insert id="insertBatch" parameterType="java.util.List">
         insert into product (
         category_id,

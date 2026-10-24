@@ -8,6 +8,7 @@ import com.beat.mall.console.request.ProductDto;
 import com.beat.mall.module.product.entity.Product;
 import com.beat.mall.module.product.entity.ProductTagRelation;
 import com.beat.mall.module.product.entity.Tag;
+import com.beat.mall.module.product.service.BaseProductService;
 import com.beat.mall.module.product.service.ProductService;
 import com.beat.mall.module.product.service.ProductTagRelationService;
 import com.beat.mall.module.product.service.TagService;
@@ -37,6 +38,9 @@ public class ProductController {
 
     @Autowired
     private TagService tagService;
+
+    @Autowired
+    private BaseProductService baseProductService;
 
     //产品分页模糊查询
     @RequestMapping("/product/list")
@@ -152,7 +156,7 @@ public class ProductController {
         String summary = productDto.getSummary().trim();
         String tags = productDto.getTags();//"A$B$C$D"（注意，使⽤$拼接）
         try {
-            productService.edit(null, categoryId, images, name, price, summary, tags);
+            baseProductService.edit(null, categoryId, images, name, price, summary, tags);
             return new Response(1001);
         } catch (Exception e) {
             log.error("Create product fail.", e);
@@ -179,7 +183,7 @@ public class ProductController {
             return new Response(3051);
         }
         try {
-            productService.edit(productId, categoryId, images, name, price, summary, tags);
+            baseProductService.edit(productId, categoryId, images, name, price, summary, tags);
             return new Response(1001);
         } catch (Exception e) {
             log.error("Update product fail.", e);
