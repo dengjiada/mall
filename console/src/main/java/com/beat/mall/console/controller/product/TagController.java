@@ -1,10 +1,12 @@
 package com.beat.mall.console.controller.product;
 
 import com.beat.mall.module.product.entity.Tag;
+import com.beat.mall.module.product.service.BaseTagService;
 import com.beat.mall.module.product.service.TagService;
 import com.beat.mall.utils.Response;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +18,9 @@ public class TagController {
 
     @Resource
     private TagService service;
+
+    @Autowired
+    private BaseTagService baseTagService;
 
     /**
     * 详情接口
@@ -55,7 +60,7 @@ public class TagController {
     @DeleteMapping("/{id}")
     public Response delete(@PathVariable Long id) {
         try {
-            service.delete(id);
+            baseTagService.delete(id);
             return new Response(1001);
         } catch (Exception e) {
             log.error("Delete tag fail.", e);

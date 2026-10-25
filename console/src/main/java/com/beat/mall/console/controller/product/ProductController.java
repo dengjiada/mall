@@ -54,7 +54,7 @@ public class ProductController {
             return new Response(1002);
         }
         String pageSize = SpringUtil.getProperty("application.pagesize");
-        Map<String, List<Long>> resolveSearchIds = productService.resolveSearchIds(categoryName, tagName);
+        Map<String, List<Long>> resolveSearchIds = baseProductService.resolveSearchIds(categoryName, tagName);
         if (resolveSearchIds == null) {
             //说明找不到与之匹配的类目名和标签名，返回空
             ProductListVo productListVo = new ProductListVo().setList(new ArrayList<>())

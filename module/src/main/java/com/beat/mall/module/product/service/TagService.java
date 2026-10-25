@@ -1,11 +1,9 @@
 package com.beat.mall.module.product.service;
 
-import com.beat.mall.module.product.entity.ProductTagRelation;
 import com.beat.mall.module.product.entity.Tag;
 import com.beat.mall.module.product.mapper.TagMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +14,6 @@ public class TagService {
 
     @Resource
     private TagMapper mapper;
-
-    @Autowired
-    private ProductTagRelationService productTagRelationService;
 
     public Tag getById(Long id) {
         Tag entity = mapper.getById(id);
@@ -48,12 +43,6 @@ public class TagService {
     }
 
     public int delete(Long id) {
-        //删除tag之前，要check是否有关联的商品，如果有，则提示不能删除！
-        List<ProductTagRelation> relationList = productTagRelationService.getByTagId(id);
-        if (!relationList.isEmpty()) {
-            throw new RuntimeException("该Tag关联商品，不能删除");
-        }
-
         int time = (int) (System.currentTimeMillis() / 1000);
         return mapper.delete(id, time);
     }
