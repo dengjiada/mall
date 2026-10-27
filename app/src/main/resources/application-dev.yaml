@@ -7,7 +7,7 @@ spring:
     # 数据库账号
     username: root
     # 加密的数据库密码
-    password: Uo4OsAeLYMw50Sa8cUCuJ7ssnTYdDWcOzd9651wSfHKVjp4T47NUGBRnPisACGXFBrnd5tySNelgNUgsMcaf+g==
+    password: HWjruzI0G/pp5PQpX0fnf3WpXZIi5hZmmEpNM5ePNyElBp/0ls+LJ7vlazhAMD00gucV/inrC2UnK4GGQn+MvQ==
 
 # 加密key
-public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMWemrv9DlmSbdrJ9vwu6/NFve0dQiS+0r+PIijPIBAJhr8cAkypXDSR+iiOd1Tg3jRuMbcBnC6VX1GTiofBduECAwEAAQ==
+public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAIHYXsX6nwsEQKA1mFqP74riDvy80y0mNlcxscAu7tV77EIffKegJstoul48DZOn1+j8W2jdY9nBBd93rxqh5MsCAwEAAQ==

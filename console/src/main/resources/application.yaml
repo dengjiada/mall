@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: local, druid
+    include: pro, druid
   application:
     name: console
   jackson:
