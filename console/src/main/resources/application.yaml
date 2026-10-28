@@ -26,11 +26,11 @@ mybatis:
 
 upload:
   image:
-    dir: tmp/upload/image/
+    dir: /usr/local/mall/tmp/upload/image/
   video:
-    dir: tmp/upload/video/
+    dir: /usr/local/mall/tmp/upload/video/
   file:
-    dir: tmp/upload/file/
+    dir: /usr/local/mall/tmp/upload/file/
 
 aliyun:
   oss:
